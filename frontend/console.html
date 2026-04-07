@@ -1,0 +1,97 @@
+<!-- frontend/console.html -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Консоль — AI Docs Generator</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="console-page">
+        <header class="console-header">
+            <a href="index.html" class="logo">← AI Docs Generator</a>
+            <nav>
+                <a href="index.html">Главная</a>
+                <a href="console.html" class="active">Консоль</a>
+            </nav>
+        </header>
+        
+        <main class="console-main">
+            <div class="form-container">
+                <h2>📝 Генерация доклада</h2>
+                
+                <form id="reportForm">
+                    <div class="form-group">
+                        <label for="topic">Тема доклада</label>
+                        <input 
+                            type="text" 
+                            id="topic" 
+                            placeholder="Например: Влияние искусственного интеллекта на образование" 
+                            required
+                        >
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="style">Стиль написания</label>
+                            <select id="style">
+                                <option value="academic">Академический</option>
+                                <option value="business">Деловой</option>
+                                <option value="creative">Творческий</option>
+                                <option value="casual">Разговорный</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="wordCount">Объём (слов)</label>
+                            <select id="wordCount">
+                                <option value="300">300 слов</option>
+                                <option value="500" selected>500 слов</option>
+                                <option value="800">800 слов</option>
+                                <option value="1000">1000 слов</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="actions">
+                        <button type="submit" class="btn-primary" id="generateBtn">
+                            ✨ Сгенерировать
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>ИИ пишет доклад... ⏳</p>
+                    <span class="subtext">Обычно занимает 10-30 секунд</span>
+                </div>
+                
+                <div class="result" id="result">
+                    <div class="result-header">
+                        <h3>✅ Готовый доклад</h3>
+                        <span class="word-count" id="wordCountDisplay"></span>
+                    </div>
+                    
+                    <div class="result-content" id="resultContent"></div>
+                    
+                    <div class="result-actions">
+                        <button class="btn-secondary" onclick="copyText()">📋 Копировать текст</button>
+                        <button class="btn-success" onclick="downloadDocx()">⬇️ Скачать DOCX</button>
+                    </div>
+                </div>
+                
+                <div class="error" id="error">
+                    <p>❌ Произошла ошибка при генерации</p>
+                    <span id="errorText"></span>
+                    <button onclick="resetForm()" class="btn-secondary">Попробовать снова</button>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <div class="toast" id="toast"></div>
+    
+    <script src="js/app.js"></script>
+</body>
+</html>
