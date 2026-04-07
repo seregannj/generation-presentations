@@ -1,8 +1,7 @@
-# backend/app/main.py
 import io
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse, JSONResponse
+from fastapi.responses import StreamingResponse
 from app.config import ALLOWED_ORIGINS
 from app.models import ReportRequest, TextResponse
 from app.ai_client import generate_report
@@ -34,7 +33,11 @@ async def root():
 async def generate_text_endpoint(request: ReportRequest):
     """Генерация текста доклада"""
     try:
-        content = generate_report(request.topic, request.style, request.word_count)
+        content = await generate_report(
+            request.topic, 
+            request.style, 
+            request.word_count
+        )
         return TextResponse(
             content=content,
             word_count=len(content.split())
@@ -47,13 +50,13 @@ async def generate_text_endpoint(request: ReportRequest):
 async def generate_docx_endpoint(request: ReportRequest):
     """Генерация и скачивание DOCX"""
     try:
-        # Генерируем текст
-        content = generate_report(request.topic, request.style, request.word_count)
+        content = await generate_report(
+            request.topic, 
+            request.style, 
+            request.word_count
+        )
         
-        # Создаём DOCX
         docx_bytes = create_docx(request.topic, content, request.style)
-        
-        # Формируем имя файла
         safe_topic = request.topic[:30].replace(" ", "_").replace("/", "_")
         filename = f"doclad_{safe_topic}.docx"
         
