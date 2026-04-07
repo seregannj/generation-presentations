@@ -1,6 +1,6 @@
 // frontend/js/app.js
 // Конфигурация API
-const API_URL = 'http://localhost:8000/api';  // Заменить на реальный URL при деплое
+const API_URL = 'https://gendoc-api.onrender.com';  // Заменить на реальный URL при деплое
 
 // Элементы DOM
 const form = document.getElementById('reportForm');
