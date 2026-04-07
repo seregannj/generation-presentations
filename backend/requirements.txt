@@ -1,7 +1,6 @@
-# backend/requirements.txt
 fastapi
 uvicorn[standard]
 python-multipart
 pydantic
-openai
+g4f
 python-docx
