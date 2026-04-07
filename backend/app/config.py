@@ -3,7 +3,7 @@ import os
 
 # G4F API конфигурация
 G4F_API_KEY = os.getenv("G4F_API_KEY", "key")
-G4F_BASE_URL = os.getenv("G4F_BASE_URL", "https://g4f.space/v1")
+G4F_BASE_URL = os.getenv("G4F_BASE_URL", "url")
 
 # CORS (для разных доменов)
 ALLOWED_ORIGINS = [
