@@ -7,5 +7,5 @@ G4F_BASE_URL = os.getenv("G4F_BASE_URL", "url")
 
 # CORS (для разных доменов)
 ALLOWED_ORIGINS = [
-    "https://seregannj.github.io/gendoc/
+    "https://seregannj.github.io/gendoc/*"
 ]
