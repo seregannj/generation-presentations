@@ -1,97 +1,702 @@
-<!-- console.html -->
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Консоль — AI Docs Generator</title>
-    <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Консоль — GenDoc</title>
+  <style>
+    :root {
+      --primary: #bbdf32;
+      --primary-dark: #a5c42a;
+      --black: #0a0a0a;
+      --dark: #1a1a1a;
+      --gray: #6b7280;
+      --light-gray: #f3f4f6;
+      --white: #ffffff;
+      --error: #ef4444;
+      --success: #22c55e;
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--light-gray);
+      color: var(--black);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    
+    /* Animations */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+    
+    /* Header */
+    .console-header {
+      background: var(--white);
+      padding: 20px 0;
+      border-bottom: 2px solid var(--light-gray);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    
+    .header-content {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--black);
+      text-decoration: none;
+      transform: rotate(-2deg);
+      display: inline-block;
+      transition: transform 0.3s ease;
+    }
+    
+    .logo:hover {
+      transform: rotate(0deg) scale(1.05);
+    }
+    
+    .logo span {
+      color: var(--primary);
+      animation: float 3s ease-in-out infinite;
+      display: inline-block;
+    }
+    
+    .back-link {
+      color: var(--gray);
+      text-decoration: none;
+      font-weight: 600;
+      padding: 10px 20px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .back-link:hover {
+      color: var(--black);
+      background: var(--light-gray);
+      transform: translateX(-5px);
+    }
+    
+    /* Main */
+    .console-main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 24px;
+    }
+    
+    .page-title {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+      animation: fadeInUp 0.5s ease-out;
+    }
+    
+    .page-subtitle {
+      color: var(--gray);
+      margin-bottom: 32px;
+      animation: fadeInUp 0.5s ease-out 0.1s both;
+    }
+    
+    /* Form Card */
+    .form-card {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 32px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      animation: fadeInUp 0.5s ease-out 0.2s both;
+      transform: rotate(-0.5deg);
+      transition: transform 0.3s ease;
+    }
+    
+    .form-card:hover {
+      transform: rotate(0deg);
+    }
+    
+    .form-group {
+      margin-bottom: 24px;
+    }
+    
+    .form-group label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--black);
+      font-size: 0.95rem;
+    }
+    
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 14px 18px;
+      border: 2px solid var(--light-gray);
+      border-radius: 12px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      background: var(--white);
+    }
+    
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(187, 223, 50, 0.2);
+    }
+    
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    
+    @media (max-width: 600px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    /* Style Selector */
+    .style-options {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 8px;
+    }
+    
+    @media (max-width: 500px) {
+      .style-options {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .style-option {
+      position: relative;
+    }
+    
+    .style-option input {
+      position: absolute;
+      opacity: 0;
+    }
+    
+    .style-label {
+      display: block;
+      padding: 16px;
+      background: var(--light-gray);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+      text-align: center;
+    }
+    
+    .style-label:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    .style-option input:checked + .style-label {
+      background: var(--primary);
+      border-color: var(--black);
+      transform: rotate(-1deg) scale(1.02);
+    }
+    
+    .style-icon {
+      font-size: 1.5rem;
+      display: block;
+      margin-bottom: 6px;
+    }
+    
+    .style-name {
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+    
+    /* Generate Button */
+    .generate-btn {
+      width: 100%;
+      background: var(--primary);
+      color: var(--black);
+      border: none;
+      padding: 18px;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 8px;
+    }
+    
+    .generate-btn:hover:not(:disabled) {
+      background: var(--primary-dark);
+      transform: translateY(-3px) rotate(-1deg);
+      box-shadow: 0 8px 25px rgba(187, 223, 50, 0.4);
+    }
+    
+    .generate-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    
+    /* Loading */
+    .loading {
+      display: none;
+      text-align: center;
+      padding: 60px 20px;
+      animation: fadeInUp 0.3s ease;
+    }
+    
+    .spinner {
+      width: 60px;
+      height: 60px;
+      border: 4px solid var(--light-gray);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+    
+    .loading p {
+      font-size: 1.2rem;
+      color: var(--black);
+      font-weight: 600;
+    }
+    
+    .loading-sub {
+      color: var(--gray);
+      font-size: 0.9rem;
+      margin-top: 8px;
+    }
+    
+    /* Result */
+    .result {
+      display: none;
+      animation: fadeInUp 0.5s ease;
+    }
+    
+    .result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    
+    .result-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+    
+    .word-count {
+      background: var(--primary);
+      color: var(--black);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    
+    .result-box {
+      background: var(--white);
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      max-height: 500px;
+      overflow-y: auto;
+      line-height: 1.8;
+      font-size: 1rem;
+      white-space: pre-wrap;
+      border-left: 4px solid var(--primary);
+    }
+    
+    .result-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+    }
+    
+    .btn-secondary {
+      flex: 1;
+      min-width: 140px;
+      background: var(--light-gray);
+      color: var(--black);
+      border: none;
+      padding: 14px 24px;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    
+    .btn-secondary:hover {
+      background: #e5e7eb;
+      transform: translateY(-2px);
+    }
+    
+    .btn-success {
+      flex: 1;
+      min-width: 140px;
+      background: var(--black);
+      color: var(--white);
+      border: none;
+      padding: 14px 24px;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    
+    .btn-success:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
+    
+    /* Error */
+    .error {
+      display: none;
+      background: #fef2f2;
+      border: 2px solid #fecaca;
+      border-radius: 16px;
+      padding: 24px;
+      text-align: center;
+      animation: fadeInUp 0.3s ease;
+    }
+    
+    .error-icon {
+      font-size: 3rem;
+      margin-bottom: 12px;
+    }
+    
+    .error p {
+      color: var(--error);
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    
+    .error-text {
+      color: var(--gray);
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+    }
+    
+    .btn-retry {
+      background: var(--white);
+      color: var(--error);
+      border: 2px solid var(--error);
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-retry:hover {
+      background: var(--error);
+      color: var(--white);
+    }
+    
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: var(--black);
+      color: var(--white);
+      padding: 16px 24px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      display: none;
+      animation: slideIn 0.3s ease;
+      z-index: 1000;
+      font-weight: 600;
+    }
+    
+    @keyframes slideIn {
+      from { transform: translateX(400px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    /* Hidden */
+    .hidden {
+      display: none !important;
+    }
+  </style>
 </head>
 <body>
-    <div class="console-page">
-        <header class="console-header">
-            <a href="index.html" class="logo">← AI Docs Generator</a>
-            <nav>
-                <a href="index.html">Главная</a>
-                <a href="console.html" class="active">Консоль</a>
-            </nav>
-        </header>
+  <header class="console-header">
+    <div class="header-content">
+      <a href="../index.html" class="logo">Gen<span>Doc</span></a>
+      <a href="../index.html" class="back-link">← На главную</a>
+    </div>
+  </header>
+
+  <main class="console-main">
+    <h1 class="page-title">📝 Генерация доклада</h1>
+    <p class="page-subtitle">Заполните форму и получите готовый текст через 10-30 секунд</p>
+    
+    <div class="form-card" id="formCard">
+      <form id="reportForm">
+        <div class="form-group">
+          <label for="topic">Тема доклада</label>
+          <input 
+            type="text" 
+            id="topic" 
+            placeholder="Например: Влияние искусственного интеллекта на образование" 
+            required
+          >
+        </div>
         
-        <main class="console-main">
-            <div class="form-container">
-                <h2>📝 Генерация доклада</h2>
-                
-                <form id="reportForm">
-                    <div class="form-group">
-                        <label for="topic">Тема доклада</label>
-                        <input 
-                            type="text" 
-                            id="topic" 
-                            placeholder="Например: Влияние искусственного интеллекта на образование" 
-                            required
-                        >
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="style">Стиль написания</label>
-                            <select id="style">
-                                <option value="academic">Академический</option>
-                                <option value="business">Деловой</option>
-                                <option value="creative">Творческий</option>
-                                <option value="casual">Разговорный</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="wordCount">Объём (слов)</label>
-                            <select id="wordCount">
-                                <option value="300">300 слов</option>
-                                <option value="500" selected>500 слов</option>
-                                <option value="800">800 слов</option>
-                                <option value="1000">1000 слов</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="actions">
-                        <button type="submit" class="btn-primary" id="generateBtn">
-                            ✨ Сгенерировать
-                        </button>
-                    </div>
-                </form>
-                
-                <div class="loading" id="loading">
-                    <div class="spinner"></div>
-                    <p>ИИ пишет доклад... ⏳</p>
-                    <span class="subtext">Обычно занимает 10-30 секунд</span>
-                </div>
-                
-                <div class="result" id="result">
-                    <div class="result-header">
-                        <h3>✅ Готовый доклад</h3>
-                        <span class="word-count" id="wordCountDisplay"></span>
-                    </div>
-                    
-                    <div class="result-content" id="resultContent"></div>
-                    
-                    <div class="result-actions">
-                        <button class="btn-secondary" onclick="copyText()">📋 Копировать текст</button>
-                        <button class="btn-success" onclick="downloadDocx()">⬇️ Скачать DOCX</button>
-                    </div>
-                </div>
-                
-                <div class="error" id="error">
-                    <p>❌ Произошла ошибка при генерации</p>
-                    <span id="errorText"></span>
-                    <button onclick="resetForm()" class="btn-secondary">Попробовать снова</button>
-                </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Стиль написания</label>
+            <div class="style-options">
+              <div class="style-option">
+                <input type="radio" name="style" id="academic" value="academic" checked>
+                <label for="academic" class="style-label">
+                  <span class="style-icon">🎓</span>
+                  <span class="style-name">Академический</span>
+                </label>
+              </div>
+              <div class="style-option">
+                <input type="radio" name="style" id="business" value="business">
+                <label for="business" class="style-label">
+                  <span class="style-icon">💼</span>
+                  <span class="style-name">Деловой</span>
+                </label>
+              </div>
+              <div class="style-option">
+                <input type="radio" name="style" id="creative" value="creative">
+                <label for="creative" class="style-label">
+                  <span class="style-icon">🎨</span>
+                  <span class="style-name">Творческий</span>
+                </label>
+              </div>
+              <div class="style-option">
+                <input type="radio" name="style" id="casual" value="casual">
+                <label for="casual" class="style-label">
+                  <span class="style-icon">💬</span>
+                  <span class="style-name">Разговорный</span>
+                </label>
+              </div>
             </div>
-        </main>
+          </div>
+          
+          <div class="form-group">
+            <label for="wordCount">Объём</label>
+            <select id="wordCount">
+              <option value="300">300 слов — короткий</option>
+              <option value="500" selected>500 слов — стандарт</option>
+              <option value="800">800 слов — подробный</option>
+              <option value="1000">1000 слов — развёрнутый</option>
+            </select>
+          </div>
+        </div>
+        
+        <button type="submit" class="generate-btn" id="generateBtn">
+          <span>✨</span>
+          <span>Сгенерировать доклад</span>
+        </button>
+      </form>
     </div>
     
-    <div class="toast" id="toast"></div>
+    <div class="loading" id="loading">
+      <div class="spinner"></div>
+      <p>ИИ пишет доклад...</p>
+      <p class="loading-sub">Обычно занимает 10-30 секунд</p>
+    </div>
     
-    <script src="js/app.js"></script>
+    <div class="error" id="error">
+      <div class="error-icon">😕</div>
+      <p>Не удалось сгенерировать</p>
+      <p class="error-text" id="errorText">Попробуйте позже</p>
+      <button class="btn-retry" onclick="resetForm()">Попробовать снова</button>
+    </div>
+    
+    <div class="result" id="result">
+      <div class="result-header">
+        <h3 class="result-title">✅ Готовый доклад</h3>
+        <span class="word-count" id="wordCountDisplay">0 слов</span>
+      </div>
+      <div class="result-box" id="resultContent"></div>
+      <div class="result-actions">
+        <button class="btn-secondary" onclick="copyText()">
+          <span>📋</span>
+          <span>Копировать</span>
+        </button>
+        <button class="btn-success" onclick="downloadDocx()">
+          <span>⬇️</span>
+          <span>Скачать DOCX</span>
+        </button>
+      </div>
+    </div>
+  </main>
+  
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const API_URL = 'https://gendoc-api.onrender.com/api';
+    
+    const form = document.getElementById('reportForm');
+    const formCard = document.getElementById('formCard');
+    const loading = document.getElementById('loading');
+    const result = document.getElementById('result');
+    const error = document.getElementById('error');
+    const generateBtn = document.getElementById('generateBtn');
+    
+    let currentText = '';
+    let currentRequest = null;
+    
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.style.display = 'block';
+      setTimeout(() => toast.style.display = 'none', 3000);
+    }
+    
+    function showState(state) {
+      formCard.style.display = state === 'form' ? 'block' : 'none';
+      loading.style.display = state === 'loading' ? 'block' : 'none';
+      result.style.display = state === 'result' ? 'block' : 'none';
+      error.style.display = state === 'error' ? 'block' : 'none';
+    }
+    
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const topic = document.getElementById('topic').value;
+      const style = document.querySelector('input[name="style"]:checked').value;
+      const wordCount = parseInt(document.getElementById('wordCount').value);
+      
+      currentRequest = { topic, style, word_count: wordCount };
+      
+      generateBtn.disabled = true;
+      showState('loading');
+      
+      try {
+        const response = await fetch(`${API_URL}/generate/text`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(currentRequest)
+        });
+        
+        if (!response.ok) {
+          const err = await response.json();
+          throw new Error(err.detail || 'Ошибка сервера');
+        }
+        
+        const data = await response.json();
+        currentText = data.content;
+        
+        document.getElementById('resultContent').textContent = data.content;
+        document.getElementById('wordCountDisplay').textContent = `${data.word_count} слов`;
+        
+        showState('result');
+        
+      } catch (err) {
+        document.getElementById('errorText').textContent = err.message;
+        showState('error');
+        console.error('Error:', err);
+      } finally {
+        generateBtn.disabled = false;
+      }
+    });
+    
+    function resetForm() {
+      document.getElementById('topic').value = '';
+      showState('form');
+    }
+    
+    function copyText() {
+      navigator.clipboard.writeText(currentText).then(() => {
+        showToast('📋 Текст скопирован!');
+      });
+    }
+    
+    async function downloadDocx() {
+      if (!currentRequest) return;
+      
+      const btn = document.querySelector('.btn-success');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '<span>⏳</span><span>Генерация...</span>';
+      btn.disabled = true;
+      
+      try {
+        const response = await fetch(`${API_URL}/generate/docx`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(currentRequest)
+        });
+        
+        if (!response.ok) throw new Error('Ошибка генерации файла');
+        
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        
+        const safeTopic = currentRequest.topic.slice(0, 30).replace(/\s+/g, '_');
+        a.download = `doclad_${safeTopic}.docx`;
+        
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        a.remove();
+        
+        showToast('✅ Файл скачан!');
+        
+      } catch (err) {
+        showToast('❌ Ошибка: ' + err.message);
+      } finally {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+      }
+    }
+  </script>
 </body>
 </html>
