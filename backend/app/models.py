@@ -1,12 +1,12 @@
-# backend/app/models.py
 from pydantic import BaseModel
-from typing import Literal
+from typing import Optional
 
 
 class ReportRequest(BaseModel):
     topic: str
-    style: Literal["academic", "casual", "business", "creative"] = "academic"
+    style: str = "academic"
     word_count: int = 500
+    additional: Optional[str] = None
 
 
 class TextResponse(BaseModel):
