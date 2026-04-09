@@ -3,809 +3,737 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Консоль — GenDoc</title>
+  <title>Генерация доклада — GenDoc</title>
   <style>
     :root {
       --primary: #bbdf32;
       --primary-dark: #a5c42a;
+      --primary-light: #d4f062;
       --black: #0a0a0a;
       --dark: #1a1a1a;
       --gray: #6b7280;
-      --gray-light: #9ca3af;
       --light-gray: #f3f4f6;
       --white: #ffffff;
+      --red: #ef4444;
     }
-    
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-      background: var(--white);
+      background: var(--light-gray);
       color: var(--black);
       line-height: 1.6;
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
     }
-    
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    .header {
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+    /* Header */
+    header {
       background: var(--white);
-      padding: 24px 0;
       border-bottom: 2px solid var(--light-gray);
+      padding: 16px 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
-    
     .header-content {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 0 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-    
     .logo {
-      font-size: 1.75rem;
+      font-size: 1.5rem;
       font-weight: 800;
       color: var(--black);
       text-decoration: none;
-      letter-spacing: -0.03em;
+      transform: rotate(-2deg);
+      display: inline-block;
     }
-    
-    .logo span {
-      color: var(--primary);
-    }
-    
+    .logo span { color: var(--primary); }
     .back-link {
       color: var(--gray);
       text-decoration: none;
-      font-weight: 600;
-      padding: 10px 20px;
-      border-radius: 8px;
-      transition: all 0.3s ease;
+      font-weight: 500;
       display: flex;
       align-items: center;
       gap: 8px;
+      transition: color 0.2s;
     }
-    
-    .back-link:hover {
-      color: var(--black);
-      background: var(--light-gray);
-    }
-    
+    .back-link:hover { color: var(--black); }
+
+    /* Main Layout */
     .main {
-      flex: 1;
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 60px 24px;
-      width: 100%;
-    }
-    
-    .page-header {
-      text-align: center;
-      margin-bottom: 48px;
-      animation: fadeInUp 0.5s ease;
-    }
-    
-    .page-title {
-      font-size: clamp(2rem, 5vw, 3rem);
-      font-weight: 800;
-      margin-bottom: 16px;
-      letter-spacing: -0.03em;
-      line-height: 1.1;
-    }
-    
-    .page-title span {
-      display: inline;
-      color: var(--primary);
-    }
-    
-    .page-subtitle {
-      color: var(--gray);
-      font-size: 1.15rem;
-    }
-    
-    .form-card {
-      background: var(--light-gray);
-      border-radius: 20px;
-      padding: 40px;
-      max-width: 700px;
-      margin: 0 auto;
-      animation: fadeInUp 0.5s ease 0.1s both;
-    }
-    
-    .form-group {
-      margin-bottom: 28px;
-    }
-    
-    .form-group label {
-      display: block;
-      font-weight: 700;
-      margin-bottom: 10px;
-      color: var(--black);
-      font-size: 1rem;
-    }
-    
-    .form-group input,
-    .form-group select {
-      width: 100%;
-      padding: 16px 20px;
-      border: 2px solid transparent;
-      border-radius: 12px;
-      font-size: 1rem;
-      transition: all 0.3s ease;
-      background: var(--white);
-    }
-    
-    .form-group input:focus,
-    .form-group select:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 4px rgba(187, 223, 50, 0.2);
-    }
-    
-    .form-row {
+      padding: 40px 0;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 24px;
+      gap: 40px;
     }
-    
-    @media (max-width: 600px) {
-      .form-row {
-        grid-template-columns: 1fr;
-      }
-      .form-card {
-        padding: 24px;
-      }
+    @media (max-width: 900px) {
+      .main { grid-template-columns: 1fr; }
     }
-    
-    .style-options {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
+
+    /* Form Section */
+    .form-section {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 32px;
+      height: fit-content;
     }
-    
-    @media (max-width: 500px) {
-      .style-options {
-        grid-template-columns: 1fr;
-      }
+    .form-header {
+      margin-bottom: 24px;
     }
-    
-    .style-option {
+    .form-header h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .form-header p {
+      color: var(--gray);
+      font-size: 0.95rem;
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+    }
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+    }
+    .form-group input[type="text"],
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 14px 16px;
+      border: 2px solid var(--light-gray);
+      border-radius: 12px;
+      font-size: 1rem;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(187, 223, 50, 0.2);
+    }
+    .form-group textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .char-counter {
+      text-align: right;
+      font-size: 0.85rem;
+      color: var(--gray);
+      margin-top: 6px;
+    }
+    .char-counter.warning { color: var(--red); }
+
+    .select-wrapper {
       position: relative;
     }
-    
-    .style-option input {
+    .select-wrapper::after {
+      content: '▼';
       position: absolute;
-      opacity: 0;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      font-size: 0.8rem;
+      color: var(--gray);
     }
-    
-    .style-label {
-      display: block;
+
+    .range-slider {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .range-slider input[type="range"] {
+      flex: 1;
+      -webkit-appearance: none;
+      height: 8px;
+      border-radius: 4px;
+      background: var(--light-gray);
+      outline: none;
+    }
+    .range-slider input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--primary);
+      cursor: pointer;
+      border: 3px solid var(--white);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      transition: transform 0.2s;
+    }
+    .range-slider input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.1);
+    }
+    .range-value {
+      min-width: 80px;
+      text-align: center;
+      font-weight: 700;
+      color: var(--primary-dark);
+      background: rgba(187, 223, 50, 0.1);
+      padding: 8px 16px;
+      border-radius: 8px;
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
       padding: 16px;
-      background: var(--white);
+      background: var(--light-gray);
       border-radius: 12px;
       cursor: pointer;
-      transition: all 0.3s ease;
-      border: 2px solid transparent;
-      text-align: center;
+      transition: all 0.2s;
     }
-    
-    .style-label:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    .checkbox-group:hover {
+      background: rgba(187, 223, 50, 0.1);
     }
-    
-    .style-option input:checked + .style-label {
-      background: var(--primary);
-      border-color: var(--black);
+    .checkbox-group input[type="checkbox"] {
+      width: 22px;
+      height: 22px;
+      accent-color: var(--primary);
+      cursor: pointer;
     }
-    
-    .style-icon {
-      font-size: 1.5rem;
-      display: block;
-      margin-bottom: 6px;
+    .checkbox-group label {
+      margin: 0;
+      cursor: pointer;
+      font-weight: 500;
     }
-    
-    .style-name {
-      font-weight: 700;
-      font-size: 0.9rem;
-    }
-    
-    .generate-btn {
+
+    .btn-generate {
       width: 100%;
-      background: var(--black);
-      color: var(--white);
-      border: none;
       padding: 18px;
+      background: var(--primary);
+      color: var(--black);
+      border: none;
       border-radius: 12px;
       font-size: 1.1rem;
       font-weight: 700;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.3s;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 10px;
-      margin-top: 8px;
     }
-    
-    .generate-btn:hover:not(:disabled) {
-      transform: translateY(-3px);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    .btn-generate:hover:not(:disabled) {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(187, 223, 50, 0.4);
     }
-    
-    .generate-btn:disabled {
+    .btn-generate:disabled {
       opacity: 0.6;
       cursor: not-allowed;
     }
-    
-    .loading {
-      display: none;
+    .btn-generate.loading::after {
+      content: '';
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--black);
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Preview Section */
+    .preview-section {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .preview-card {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 32px;
+      flex: 1;
+    }
+    .preview-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .preview-header h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+    .preview-badge {
+      background: var(--primary);
+      color: var(--black);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .preview-content {
+      background: var(--light-gray);
+      border-radius: 16px;
+      padding: 24px;
+      min-height: 400px;
+    }
+    .preview-placeholder {
+      color: var(--gray);
       text-align: center;
       padding: 60px 20px;
-      animation: fadeInUp 0.3s ease;
     }
-    
-    .spinner {
+    .preview-placeholder-icon {
+      font-size: 4rem;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+    .preview-text {
+      line-height: 1.8;
+      white-space: pre-wrap;
+    }
+    .preview-text h3 {
+      font-size: 1.1rem;
+      margin: 20px 0 12px;
+      color: var(--black);
+    }
+    .preview-text p {
+      margin-bottom: 12px;
+      color: var(--dark);
+    }
+
+    .preview-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .btn-secondary {
+      flex: 1;
+      padding: 14px;
+      background: var(--light-gray);
+      color: var(--black);
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-secondary:hover {
+      background: #e5e7eb;
+    }
+    .btn-secondary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .btn-primary-action {
+      flex: 2;
+      padding: 14px;
+      background: var(--black);
+      color: var(--white);
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-primary-action:hover:not(:disabled) {
+      background: var(--dark);
+      transform: translateY(-2px);
+    }
+
+    /* Tips Card */
+    .tips-card {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .tips-card h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .tips-list {
+      list-style: none;
+    }
+    .tips-list li {
+      padding: 10px 0;
+      border-bottom: 1px solid var(--light-gray);
+      color: var(--gray);
+      font-size: 0.95rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .tips-list li:last-child { border-bottom: none; }
+    .tips-list li::before {
+      content: '✓';
+      color: var(--primary);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    /* Error/Success Messages */
+    .message {
+      padding: 16px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      font-size: 0.95rem;
+      display: none;
+    }
+    .message.error {
+      display: block;
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+    .message.success {
+      display: block;
+      background: #dcfce7;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+    }
+
+    /* Loading overlay */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255,255,255,0.9);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 20px;
+      z-index: 1000;
+    }
+    .loading-overlay.active { display: flex; }
+    .spinner-large {
       width: 60px;
       height: 60px;
       border: 4px solid var(--light-gray);
       border-top-color: var(--primary);
       border-radius: 50%;
       animation: spin 1s linear infinite;
-      margin: 0 auto 20px;
     }
-    
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-    
-    .loading p {
+    .loading-text {
       font-size: 1.2rem;
-      color: var(--black);
       font-weight: 600;
+      color: var(--black);
     }
-    
-    .loading-sub {
+    .loading-subtext {
       color: var(--gray);
-      font-size: 0.95rem;
-      margin-top: 8px;
-    }
-    
-    .result {
-      display: none;
-      animation: fadeInUp 0.5s ease;
-    }
-    
-    .result-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-    
-    .result-title {
-      font-size: 1.3rem;
-      font-weight: 700;
-    }
-    
-    .word-count {
-      background: var(--primary);
-      color: var(--black);
-      padding: 6px 16px;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      font-weight: 600;
-    }
-    
-    .result-box {
-      background: var(--light-gray);
-      border-radius: 16px;
-      padding: 32px;
-      max-height: 500px;
-      overflow-y: auto;
-      line-height: 1.8;
-      font-size: 1rem;
-      white-space: pre-wrap;
-      border-left: 4px solid var(--primary);
-    }
-    
-    .result-actions {
-      display: flex;
-      gap: 12px;
-      margin-top: 24px;
-      flex-wrap: wrap;
-    }
-    
-    .btn-secondary {
-      flex: 1;
-      min-width: 140px;
-      background: var(--light-gray);
-      color: var(--black);
-      border: 2px solid var(--black);
-      padding: 14px 24px;
-      border-radius: 10px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-    
-    .btn-secondary:hover {
-      background: var(--primary);
-      border-color: var(--primary);
-    }
-    
-    .btn-success {
-      flex: 1;
-      min-width: 140px;
-      background: var(--black);
-      color: var(--white);
-      border: 2px solid var(--black);
-      padding: 14px 24px;
-      border-radius: 10px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-    
-    .btn-success:hover {
-      background: var(--primary);
-      color: var(--black);
-      border-color: var(--primary);
-    }
-    
-    .error {
-      display: none;
-      background: #fef2f2;
-      border: 2px solid #fecaca;
-      border-radius: 16px;
-      padding: 32px;
-      text-align: center;
-      animation: fadeInUp 0.3s ease;
-    }
-    
-    .error-icon {
-      font-size: 3rem;
-      margin-bottom: 12px;
-    }
-    
-    .error p {
-      color: #dc2626;
-      font-weight: 600;
-      margin-bottom: 8px;
-    }
-    
-    .error-text {
-      color: var(--gray);
-      font-size: 0.95rem;
-      margin-bottom: 20px;
-    }
-    
-    .btn-retry {
-      background: var(--white);
-      color: #dc2626;
-      border: 2px solid #dc2626;
-      padding: 12px 24px;
-      border-radius: 8px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    
-    .btn-retry:hover {
-      background: #dc2626;
-      color: var(--white);
-    }
-    
-    .toast {
-      position: fixed;
-      bottom: 30px;
-      right: 30px;
-      background: var(--black);
-      color: var(--white);
-      padding: 16px 24px;
-      border-radius: 12px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-      display: none;
-      animation: slideIn 0.3s ease;
-      z-index: 1000;
-      font-weight: 600;
-    }
-    
-    @keyframes slideIn {
-      from { transform: translateX(400px); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
-    }
-    
-    .footer {
-      background: var(--black);
-      color: var(--white);
-      padding: 60px 0 40px;
-      margin-top: auto;
-    }
-    
-    .footer-content {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 0 24px;
-    }
-    
-    .footer-grid {
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr 1fr;
-      gap: 40px;
-      margin-bottom: 48px;
-    }
-    
-    @media (max-width: 768px) {
-      .footer-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-    }
-    
-    @media (max-width: 480px) {
-      .footer-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-    
-    .footer-brand .logo {
-      color: var(--white);
-      margin-bottom: 16px;
-      display: inline-block;
-    }
-    
-    .footer-brand p {
-      color: var(--gray-light);
-      font-size: 0.95rem;
-      line-height: 1.7;
-    }
-    
-    .footer-links h4 {
       font-size: 0.9rem;
-      font-weight: 700;
-      margin-bottom: 16px;
-      color: var(--white);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-    
-    .footer-links ul {
-      list-style: none;
-    }
-    
-    .footer-links li {
-      margin-bottom: 10px;
-    }
-    
-    .footer-links a {
-      color: var(--gray-light);
-      text-decoration: none;
-      font-size: 0.9rem;
-      transition: color 0.2s;
-    }
-    
-    .footer-links a:hover {
-      color: var(--primary);
-    }
-    
-    .footer-bottom {
-      border-top: 1px solid #333;
-      padding-top: 24px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 16px;
-    }
-    
-    .footer-bottom p {
-      color: var(--gray);
-      font-size: 0.85rem;
-    }
-    
-    .footer-legal {
-      display: flex;
-      gap: 24px;
-    }
-    
-    .footer-legal a {
-      color: var(--gray-light);
-      text-decoration: none;
-      font-size: 0.85rem;
-    }
-    
-    .footer-legal a:hover {
-      color: var(--primary);
-    }
-    
-    .hidden {
-      display: none !important;
     }
   </style>
 </head>
 <body>
-  <header class="header">
-    <div class="header-content">
-      <a href="../index.html" class="logo">Gen<span>Doc</span></a>
-      <a href="../index.html" class="back-link">← На главную</a>
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner-large"></div>
+    <div class="loading-text">ИИ пишет доклад...</div>
+    <div class="loading-subtext">Обычно занимает 10-30 секунд</div>
+  </div>
+
+  <header>
+    <div class="container">
+      <div class="header-content">
+        <a href="../index.html" class="logo">Gen<span>Doc</span></a>
+        <a href="../index.html" class="back-link">← Назад</a>
+      </div>
     </div>
   </header>
 
-  <main class="main">
-    <div class="page-header">
-      <h1 class="page-title">Генерация <span>доклада</span></h1>
-      <p class="page-subtitle">Заполните форму и получите готовый текст</p>
-    </div>
-    
-    <div class="form-card" id="formCard">
-      <form id="reportForm">
+  <main class="main container">
+    <!-- Form Section -->
+    <section class="form-section">
+      <div class="form-header">
+        <h1>📝 Новый доклад</h1>
+        <p>Заполните параметры и получите готовый текст</p>
+      </div>
+
+      <div class="message" id="message"></div>
+
+      <form id="docladForm">
         <div class="form-group">
-          <label for="topic">Тема доклада</label>
-          <input type="text" id="topic" placeholder="Например: Влияние искусственного интеллекта на образование" required>
+          <label for="topic">Тема доклада *</label>
+          <input 
+            type="text" 
+            id="topic" 
+            placeholder="Например: Влияние искусственного интеллекта на образование"
+            required
+            maxlength="200"
+          >
+          <div class="char-counter" id="topicCounter">0 / 200</div>
         </div>
-        
-        <div class="form-row">
-          <div class="form-group">
-            <label>Стиль написания</label>
-            <div class="style-options">
-              <div class="style-option">
-                <input type="radio" name="style" id="academic" value="academic" checked>
-                <label for="academic" class="style-label">
-                  <span class="style-icon">🎓</span>
-                  <span class="style-name">Академический</span>
-                </label>
-              </div>
-              <div class="style-option">
-                <input type="radio" name="style" id="business" value="business">
-                <label for="business" class="style-label">
-                  <span class="style-icon">💼</span>
-                  <span class="style-name">Деловой</span>
-                </label>
-              </div>
-              <div class="style-option">
-                <input type="radio" name="style" id="creative" value="creative">
-                <label for="creative" class="style-label">
-                  <span class="style-icon">🎨</span>
-                  <span class="style-name">Творческий</span>
-                </label>
-              </div>
-              <div class="style-option">
-                <input type="radio" name="style" id="casual" value="casual">
-                <label for="casual" class="style-label">
-                  <span class="style-icon">💬</span>
-                  <span class="style-name">Разговорный</span>
-                </label>
-              </div>
-            </div>
-          </div>
-          
-          <div class="form-group">
-            <label for="wordCount">Объём</label>
-            <select id="wordCount">
-              <option value="300">300 слов — короткий</option>
-              <option value="500" selected>500 слов — стандарт</option>
-              <option value="800">800 слов — подробный</option>
-              <option value="1000">1000 слов — развёрнутый</option>
+
+        <div class="form-group">
+          <label for="style">Стиль написания</label>
+          <div class="select-wrapper">
+            <select id="style">
+              <option value="academic">🎓 Академический — научный стиль с терминологией</option>
+              <option value="business">💼 Деловой — конкретика, профессиональная лексика</option>
+              <option value="creative">🎨 Творческий — яркие образы, эмоциональность</option>
+              <option value="casual">💬 Разговорный — простой язык без сложных терминов</option>
             </select>
           </div>
         </div>
-        
-        <button type="submit" class="generate-btn" id="generateBtn">
-          <span>✦</span>
-          <span>Сгенерировать доклад</span>
+
+        <div class="form-group">
+          <label for="wordCount">Объём (слов)</label>
+          <div class="range-slider">
+            <input 
+              type="range" 
+              id="wordCount" 
+              min="300" 
+              max="2000" 
+              step="100" 
+              value="500"
+            >
+            <div class="range-value" id="wordCountValue">500</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="additional">Дополнительные требования <span style="color: var(--gray); font-weight: 400;">(необязательно)</span></label>
+          <textarea 
+            id="additional" 
+            placeholder="Укажите особенности: ключевые аспекты, которые нужно раскрыть, источники, которые стоит упомянуть, ограничения..."
+            maxlength="500"
+          ></textarea>
+          <div class="char-counter" id="additionalCounter">0 / 500</div>
+        </div>
+
+        <div class="form-group">
+          <div class="checkbox-group">
+            <input type="checkbox" id="needDocx" checked>
+            <label for="needDocx">Сразу скачать DOCX после генерации</label>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-generate" id="generateBtn">
+          ✨ Сгенерировать доклад
         </button>
       </form>
-    </div>
-    
-    <div class="loading" id="loading">
-      <div class="spinner"></div>
-      <p>ИИ пишет доклад...</p>
-      <p class="loading-sub">Обычно занимает 10-30 секунд</p>
-    </div>
-    
-    <div class="error" id="error">
-      <div class="error-icon">😟</div>
-      <p>Не удалось сгенерировать</p>
-      <p class="error-text" id="errorText">Попробуйте позже</p>
-      <button class="btn-retry" onclick="resetForm()">Попробовать снова</button>
-    </div>
-    
-    <div class="result" id="result">
-      <div class="result-header">
-        <h3 class="result-title">✓ Готовый доклад</h3>
-        <span class="word-count" id="wordCountDisplay">0 слов</span>
-      </div>
-      <div class="result-box" id="resultContent"></div>
-      <div class="result-actions">
-        <button class="btn-secondary" onclick="copyText()">
-          <span>📋</span>
-          <span>Копировать</span>
-        </button>
-        <button class="btn-success" onclick="downloadDocx()">
-          <span>⬇️</span>
-          <span>Скачать DOCX</span>
-        </button>
-      </div>
-    </div>
-  </main>
-  
-  <div class="toast" id="toast"></div>
+    </section>
 
-  <footer class="footer">
-    <div class="footer-content">
-      <div class="footer-grid">
-        <div class="footer-brand">
-          <a href="../index.html" class="logo">Gen<span>Doc</span></a>
-          <p>Генератор докладов и сочинений с помощью ИИ. Быстро, бесплатно, без регистрации.</p>
+    <!-- Preview Section -->
+    <section class="preview-section">
+      <div class="preview-card">
+        <div class="preview-header">
+          <h2>Предпросмотр</h2>
+          <span class="preview-badge" id="statusBadge">Ожидание</span>
         </div>
-        
-        <div class="footer-links">
-          <h4>Продукт</h4>
-          <ul>
-            <li><a href="report.html">Создать доклад</a></li>
-            <li><a href="#">Создать сочинение</a></li>
-          </ul>
+        <div class="preview-content" id="previewContent">
+          <div class="preview-placeholder">
+            <div class="preview-placeholder-icon">📝</div>
+            <p>Здесь появится результат генерации</p>
+            <p style="font-size: 0.9rem; margin-top: 8px;">Заполните форму и нажмите кнопку</p>
+          </div>
         </div>
-        
-        <div class="footer-links">
-          <h4>Помощь</h4>
-          <ul>
-            <li><a href="#">Как использовать</a></li>
-            <li><a href="#">FAQ</a></li>
-          </ul>
-        </div>
-        
-        <div class="footer-links">
-          <h4>Контакты</h4>
-          <ul>
-            <li><a href="#">—</a></li>
-          </ul>
+        <div class="preview-actions" id="previewActions" style="display: none;">
+          <button class="btn-secondary" id="copyBtn" onclick="copyText()">
+            📋 Копировать
+          </button>
+          <button class="btn-primary-action" id="downloadBtn" onclick="downloadDocx()">
+            ⬇️ Скачать DOCX
+          </button>
         </div>
       </div>
-      
-      <div class="footer-bottom">
-        <p>© 2026 GenDoc. Все права защищены.</p>
-        <div class="footer-legal">
-          <a href="#">Политика конфиденциальности</a>
-          <a href="#">Условия использования</a>
-        </div>
+
+      <div class="tips-card">
+        <h3>💡 Советы для лучшего результата</h3>
+        <ul class="tips-list">
+          <li>Конкретизируйте тему — вместо «Экология» напишите «Проблемы переработки пластика в крупных городах»</li>
+          <li>Укажите целевую аудиторию в дополнительных требованиях</li>
+          <li>Для научных работ выбирайте академический стиль</li>
+          <li>Проверяйте факты — ИИ может ошибаться в датах и цифрах</li>
+        </ul>
       </div>
-    </div>
-  </footer>
+    </section>
+  </main>
 
   <script>
     const API_URL = 'https://gendoc-api.onrender.com/api';
     
-    const form = document.getElementById('reportForm');
-    const formCard = document.getElementById('formCard');
-    const loading = document.getElementById('loading');
-    const result = document.getElementById('result');
-    const error = document.getElementById('error');
+    // Elements
+    const form = document.getElementById('docladForm');
+    const topicInput = document.getElementById('topic');
+    const topicCounter = document.getElementById('topicCounter');
+    const additionalInput = document.getElementById('additional');
+    const additionalCounter = document.getElementById('additionalCounter');
+    const wordCountSlider = document.getElementById('wordCount');
+    const wordCountValue = document.getElementById('wordCountValue');
     const generateBtn = document.getElementById('generateBtn');
-    
-    let currentText = '';
-    let currentRequest = null;
-    
-    function showToast(message) {
-      const toast = document.getElementById('toast');
-      toast.textContent = message;
-      toast.style.display = 'block';
-      setTimeout(() => toast.style.display = 'none', 3000);
-    }
-    
-    function showState(state) {
-      formCard.style.display = state === 'form' ? 'block' : 'none';
-      loading.style.display = state === 'loading' ? 'block' : 'none';
-      result.style.display = state === 'result' ? 'block' : 'none';
-      error.style.display = state === 'error' ? 'block' : 'none';
-    }
-    
+    const previewContent = document.getElementById('previewContent');
+    const previewActions = document.getElementById('previewActions');
+    const statusBadge = document.getElementById('statusBadge');
+    const message = document.getElementById('message');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+
+    let generatedText = '';
+    let generatedRequest = null;
+
+    // Character counters
+    topicInput.addEventListener('input', () => {
+      const len = topicInput.value.length;
+      topicCounter.textContent = `${len} / 200`;
+      topicCounter.classList.toggle('warning', len > 180);
+    });
+
+    additionalInput.addEventListener('input', () => {
+      const len = additionalInput.value.length;
+      additionalCounter.textContent = `${len} / 500`;
+      additionalCounter.classList.toggle('warning', len > 450);
+    });
+
+    // Word count slider
+    wordCountSlider.addEventListener('input', () => {
+      wordCountValue.textContent = wordCountSlider.value;
+    });
+
+    // Form submit
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       
-      const topic = document.getElementById('topic').value;
-      const style = document.querySelector('input[name="style"]:checked').value;
-      const wordCount = parseInt(document.getElementById('wordCount').value);
-      
-      currentRequest = { topic, style, word_count: wordCount };
-      
+      const request = {
+        topic: topicInput.value.trim(),
+        style: document.getElementById('style').value,
+        word_count: parseInt(wordCountSlider.value),
+        additional: additionalInput.value.trim()
+      };
+
+      generatedRequest = request;
+
+      // Show loading
       generateBtn.disabled = true;
-      showState('loading');
-      
+      generateBtn.classList.add('loading');
+      generateBtn.textContent = 'Генерация...';
+      loadingOverlay.classList.add('active');
+      message.className = 'message';
+      message.style.display = 'none';
+
       try {
         const response = await fetch(`${API_URL}/generate/text`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(currentRequest)
+          body: JSON.stringify(request)
         });
-        
+
         if (!response.ok) {
           const err = await response.json();
           throw new Error(err.detail || 'Ошибка сервера');
         }
-        
+
         const data = await response.json();
-        currentText = data.content;
-        
-        document.getElementById('resultContent').textContent = data.content;
-        document.getElementById('wordCountDisplay').textContent = `${data.word_count} слов`;
-        
-        showState('result');
-        
+        generatedText = data.content;
+
+        // Update preview
+        previewContent.innerHTML = `<div class="preview-text">${escapeHtml(generatedText)}</div>`;
+        statusBadge.textContent = `✓ ${data.word_count} слов`;
+        previewActions.style.display = 'flex';
+
+        // Auto-download if checked
+        if (document.getElementById('needDocx').checked) {
+          await downloadDocx();
+        }
+
       } catch (err) {
-        document.getElementById('errorText').textContent = err.message;
-        showState('error');
-        console.error('Error:', err);
+        showError(err.message);
+        statusBadge.textContent = 'Ошибка';
       } finally {
         generateBtn.disabled = false;
+        generateBtn.classList.remove('loading');
+        generateBtn.textContent = '✨ Сгенерировать доклад';
+        loadingOverlay.classList.remove('active');
       }
     });
-    
-    function resetForm() {
-      document.getElementById('topic').value = '';
-      showState('form');
+
+    function escapeHtml(text) {
+      return text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/\n/g, '<br>');
     }
-    
-    function copyText() {
-      navigator.clipboard.writeText(currentText).then(() => {
-        showToast('📋 Текст скопирован!');
-      });
+
+    function showError(text) {
+      message.textContent = text;
+      message.className = 'message error';
     }
-    
+
+    async function copyText() {
+      if (!generatedText) return;
+      
+      try {
+        await navigator.clipboard.writeText(generatedText);
+        const btn = document.getElementById('copyBtn');
+        const original = btn.textContent;
+        btn.textContent = '✓ Скопировано!';
+        setTimeout(() => btn.textContent = original, 2000);
+      } catch (err) {
+        showError('Не удалось скопировать текст');
+      }
+    }
+
     async function downloadDocx() {
-      if (!currentRequest) return;
+      if (!generatedRequest) return;
       
-      const btn = document.querySelector('.btn-success');
-      const originalText = btn.innerHTML;
-      btn.innerHTML = '<span>⟳</span><span>Генерация...</span>';
+      const btn = document.getElementById('downloadBtn');
       btn.disabled = true;
-      
+      const original = btn.textContent;
+      btn.textContent = '⏳ Создание DOCX...';
+
       try {
         const response = await fetch(`${API_URL}/generate/docx`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(currentRequest)
+          body: JSON.stringify(generatedRequest)
         });
-        
-        if (!response.ok) throw new Error('Ошибка генерации файла');
-        
+
+        if (!response.ok) throw new Error('Ошибка создания файла');
+
         const blob = await response.blob();
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
         
-        const safeTopic = currentRequest.topic.slice(0, 30).replace(/\s+/g, '_');
+        const safeTopic = generatedRequest.topic.slice(0, 30).replace(/\s+/g, '_');
         a.download = `doclad_${safeTopic}.docx`;
         
         document.body.appendChild(a);
         a.click();
         window.URL.revokeObjectURL(url);
         a.remove();
-        
-        showToast('✓ Файл скачан!');
-        
+
+        btn.textContent = '✓ Скачано!';
+        setTimeout(() => {
+          btn.textContent = original;
+          btn.disabled = false;
+        }, 2000);
+
       } catch (err) {
-        showToast('✗ Ошибка: ' + err.message);
-      } finally {
-        btn.innerHTML = originalText;
+        showError('Ошибка скачивания: ' + err.message);
+        btn.textContent = original;
         btn.disabled = false;
       }
     }
