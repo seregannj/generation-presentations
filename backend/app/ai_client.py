@@ -1,14 +1,13 @@
-# backend/app/ai_client.py
 import g4f
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
 
-# Пул потоков для синхронных вызовов g4f
+
 executor = ThreadPoolExecutor(max_workers=2)
 
 
 def _generate_sync(prompt: str) -> str:
-    """Синхронная функция для вызова g4f"""
+    """Синхронная генерация через g4f"""
     return g4f.ChatCompletion.create(
         model="gpt-4",
         messages=[{"role": "user", "content": prompt}],
@@ -16,12 +15,17 @@ def _generate_sync(prompt: str) -> str:
     )
 
 
-async def generate_report(topic: str, style: str, word_count: int) -> str:
-    """Асинхронная генерация доклада через g4f в отдельном потоке"""
+async def generate_report(
+    topic: str,
+    style: str,
+    word_count: int,
+    additional: str = None
+) -> str:
+    """Асинхронная генерация с поддержкой доп. требований"""
     
     style_descriptions = {
         "academic": "академический, научный стиль с терминологией",
-        "casual": "разговорный, простой язык без сложных терминов", 
+        "casual": "разговорный, простой язык без сложных терминов",
         "business": "деловой стиль, конкретика, профессиональная лексика",
         "creative": "творческий стиль, яркие образы, эмоциональность"
     }
@@ -37,7 +41,9 @@ async def generate_report(topic: str, style: str, word_count: int) -> str:
 
 Начни с заголовка доклада."""
     
-    # Запускаем в отдельном потоке, чтобы не конфликтовать с event loop FastAPI
+    if additional:
+        prompt += f"\n\nДополнительные требования:\n{additional}"
+    
     loop = asyncio.get_event_loop()
     response = await loop.run_in_executor(executor, _generate_sync, prompt)
     
